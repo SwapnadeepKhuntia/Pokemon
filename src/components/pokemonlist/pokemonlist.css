@@ -1,0 +1,10 @@
+.pokemonlist-wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: 18%;
+}
+button{
+    padding: 10px 20px;
+    margin-left: 20px;
+    cursor: pointer;
+}
