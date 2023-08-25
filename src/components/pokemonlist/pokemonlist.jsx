@@ -16,7 +16,7 @@ function Pokemonlist()
     const fatchdata = async() =>{
         setisloding(true)
         const responce = await axios.get(pokemon_url)
-        console.log(responce.data);
+        // console.log(responce.data);
         setpre(responce.data.previous);
         setnext(responce.data.next)
         setisloding(false)
@@ -49,7 +49,7 @@ function Pokemonlist()
        <div>
            <div className="pokemonlist-wrapper">
            {
-             (isloding)? "loading....": storedata.map((el)=> <Pokemon key={el.id} name={el.name} image={el.image}/>)
+             (isloding)? "loading....": storedata.map((el)=> <Pokemon key={el.id} name={el.name} image={el.image}id={el.id}/>)
            }
            </div>
            <button disabled={pre == null} onClick={()=>setpokemon_url(pre)}>Pre</button>
