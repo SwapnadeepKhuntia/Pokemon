@@ -1,0 +1,6 @@
+.pokemondetails-image{
+    display: flex;
+    height: 200px;
+    width: 400px;
+    margin: auto;
+}
