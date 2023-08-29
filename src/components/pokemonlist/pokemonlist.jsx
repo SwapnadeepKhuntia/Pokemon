@@ -6,22 +6,36 @@ import "./pokemonlist.css"
 function Pokemonlist()
 {
  
-    const [pokemon_url,setpokemon_url]=useState("https://pokeapi.co/api/v2/pokemon");
-    const [storedata,setstoredata]=useState([]);
-    const [isloding,setisloding] =useState(true)
+    // const [pokemon_url,setpokemon_url]=useState("https://pokeapi.co/api/v2/pokemon");
+    // const [storedata,setstoredata]=useState([]);
+    // const [isloding,setisloding] =useState(true)
+    // const[pre,setpre]=useState()
+    // const[next,setnext]=useState()
 
-    const[pre,setpre]=useState()
-    const[next,setnext]=useState()
+
+    const [pokemonstate,setpokemonstate]=useState({
+        pokemon_url:"https://pokeapi.co/api/v2/pokemon",
+        storedata:[],
+        isloding:true,
+        pre:"",
+        next:""
+    });
 
     const fatchdata = async() =>{
-        setisloding(true)
-        const responce = await axios.get(pokemon_url)
-        // console.log(responce.data);
-        setpre(responce.data.previous);
-        setnext(responce.data.next)
-        setisloding(false)
+        // setisloding(true)
+        setpokemonstate((state)=>({...state,isloding:true}))
+        const responce = await axios.get(pokemonstate.pokemon_url)
+        console.log(responce.data);
+        // setpre(responce.data.previous);
+        // setnext(responce.data.next)
+        setpokemonstate((state)=>({
+            ...state,
+            pre:responce.data.previous,
+            next:responce.data.next
+        }))
+        // setisloding(false)
         const alldata=responce.data.results;
-        // console.log(alldata);
+        console.log(alldata);
         const allurl = alldata.map((el)=> axios.get(el.url))
         // console.log(allurl);
         const pokemonurl = await axios.all(allurl);
@@ -37,23 +51,24 @@ function Pokemonlist()
             }
         })
         // console.log(pokemon);
-        setstoredata(pokemon)
+        // setstoredata(pokemon)
+        setpokemonstate((state)=>({...state,storedata:pokemon,isloding:false}))
     }
 
     useEffect(()=>{
         fatchdata()
-    },[pokemon_url])
+    },[pokemonstate.pokemon_url])
 
    return(
        <>
        <div>
            <div className="pokemonlist-wrapper">
            {
-             (isloding)? "loading....": storedata.map((el)=> <Pokemon key={el.id} name={el.name} image={el.image}id={el.id}/>)
+             (pokemonstate.isloding)? "loading....":pokemonstate.storedata.map((el)=> <Pokemon key={el.id} name={el.name} image={el.image}id={el.id}/>)
            }
            </div>
-           <button disabled={pre == null} onClick={()=>setpokemon_url(pre)}>Pre</button>
-           <button disabled={next == null} onClick={()=>setpokemon_url(next)}>Next</button>
+           <button disabled={pokemonstate.pre == null} onClick={()=>setpokemonstate({...pokemonstate,pokemon_url:pokemonstate.pre})}>Pre</button>
+           <button disabled={pokemonstate.next == null} onClick={()=>setpokemonstate({...pokemonstate,pokemon_url:pokemonstate.next})}>Next</button>
         </div>
        </>
    )
